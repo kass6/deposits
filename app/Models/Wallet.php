@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\DB;
  */
 class Wallet extends Model
 {
+
+    public const MAX_AMOUNT = 9999999999;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -28,18 +31,25 @@ class Wallet extends Model
     {
         DB::transaction(function () use ($amount) {
             $this->balance += $amount;
-            $this->saveOrFail();
+            if (!$this->save()) {
+                return;
+            }
 
-            Transaction::createEnter($amount, $this->id, $this->user_id);
+            if (!Transaction::createEnter($amount, $this->id, $this->user_id)) {
+                return;
+            }
         });
     }
 
-    public function accrue($amount, $depositId): void
+    public function accrue($amount, $depositId): bool
     {
         $this->balance += $amount;
-        $this->saveOrFail();
 
-        Transaction::createAccrue($amount, $this->id, $this->user_id, $depositId);
+        if (!$this->save()) {
+            return false;
+        }
+
+        return Transaction::createAccrue($amount, $this->id, $this->user_id, $depositId);
     }
 
     /**

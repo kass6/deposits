@@ -45,7 +45,7 @@ class Transaction extends Model
         return $this->hasOne(Deposit::class);
     }
 
-    public static function createEnter($amount, $walletId, $userId): void
+    public static function createEnter($amount, $walletId, $userId): bool
     {
         $transaction = new self();
         $transaction->setRawAttributes([
@@ -55,10 +55,10 @@ class Transaction extends Model
             'deposit_id' => null,
             'amount' => $amount
         ]);
-        $transaction->saveOrFail();
+        return $transaction->save();
     }
 
-    public static function createCreateDeposit($amount, $walletId, $userId, $depositId): void
+    public static function createCreateDeposit($amount, $walletId, $userId, $depositId): bool
     {
         $transaction = new self();
         $transaction->setRawAttributes([
@@ -68,10 +68,10 @@ class Transaction extends Model
             'deposit_id' => $depositId,
             'amount' => $amount
         ]);
-        $transaction->saveOrFail();
+        return $transaction->save();
     }
 
-    public static function createAccrue($amount, $walletId, $userId, $depositId): void
+    public static function createAccrue($amount, $walletId, $userId, $depositId): bool
     {
         $transaction = new self();
         $transaction->setRawAttributes([
@@ -81,10 +81,10 @@ class Transaction extends Model
             'deposit_id' => $depositId,
             'amount' => $amount
         ]);
-        $transaction->saveOrFail();
+        return $transaction->save();
     }
 
-    public static function createCloseDeposit($amount, $walletId, $userId, $depositId): void
+    public static function createCloseDeposit($amount, $walletId, $userId, $depositId): bool
     {
         $transaction = new self();
         $transaction->setRawAttributes([
@@ -94,6 +94,6 @@ class Transaction extends Model
             'deposit_id' => $depositId,
             'amount' => $amount
         ]);
-        $transaction->saveOrFail();
+        return $transaction->save();
     }
 }

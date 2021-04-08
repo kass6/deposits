@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateDepositRequest;
 use App\Models\Deposit;
+use App\Services\CreateDeposit;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -35,7 +36,7 @@ class DepositsController extends Controller
     {
         $validated = $request->validated();
 
-        Deposit::create($validated['recharge-deposit'], Auth::user()->wallet);
+        (new CreateDeposit)->create($validated['recharge-deposit'], Auth::user()->wallet);
 
         return Redirect::to(route('deposits'));
     }

@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\UserBalanceNotEnough;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
 class CreateDepositRequest extends FormRequest
 {
@@ -30,11 +30,7 @@ class CreateDepositRequest extends FormRequest
                 'numeric',
                 'min:10',
                 'max:100',
-                function ($attribute, $value, $fail) {
-                    if ($value > Auth::user()->wallet->balance) {
-                        $fail('Please charge your balance first.');
-                    }
-                },
+                new UserBalanceNotEnough()
             ]
         ];
     }
