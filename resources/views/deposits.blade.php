@@ -30,11 +30,7 @@
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        active
-                                    </th>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        duration
+                                        accrue_sum
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -42,11 +38,11 @@
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        created_at
+                                        active
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        updated_at
+                                        created_at
                                     </th>
                                 </tr>
                                 </thead>
@@ -63,19 +59,22 @@
                                             <div class="text-sm text-gray-900">{{$deposit->percent}}</div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm text-gray-900">{{$deposit->active}}</div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm text-gray-900">{{$deposit->duration}}</div>
+                                            <div class="text-sm text-gray-900">
+                                                @if ($deposit->accrue_times > 0)
+                                                    {{$deposit->invested / 100 * $deposit->percent * $deposit->accrue_times }}
+                                                @else
+                                                    0
+                                                @endif
+                                            </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="text-sm text-gray-900">{{$deposit->accrue_times}}</div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm text-gray-900">{{$deposit->created_at}}</div>
+                                            <div class="text-sm text-gray-900">{{$deposit->active}}</div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm text-gray-900">{{$deposit->updated_at}}</div>
+                                            <div class="text-sm text-gray-900">{{$deposit->created_at}}</div>
                                         </td>
                                     </tr>
                                 @endforeach
