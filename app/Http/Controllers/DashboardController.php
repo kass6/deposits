@@ -2,19 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Support\Facades\Auth;
-
 class DashboardController extends Controller
 {
 
     public function index()
     {
-        return view('dashboard',[
-            'balance' => Auth::user()->wallet->balance
-        ]);
+        return view('dashboard');
     }
 }

@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -28,18 +28,26 @@ class Wallet extends Model
     {
         DB::transaction(function () use ($amount) {
             $this->balance += $amount;
-            $this->save();
+            $this->saveOrFail();
 
             Transaction::createEnter($amount, $this->id, $this->user_id);
         });
     }
 
-    /**
-     * @return HasOne
-     */
-    public function user(): HasOne
+    public function accrue($amount, $depositId): void
     {
-        return $this->hasOne(User::class);
+        $this->balance += $amount;
+        $this->saveOrFail();
+
+        Transaction::createAccrue($amount, $this->id, $this->user_id, $depositId);
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     /**
