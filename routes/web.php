@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepositsController;
+use App\Http\Controllers\TransactionsController;
 use App\Http\Controllers\WalletsController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,7 +37,7 @@ Route::post('/deposits/recharge', [DepositsController::class, 'recharge'])
     ->middleware(['auth'])
     ->name('recharge-deposit');
 
-Route::get('/transactions', [\App\Http\Controllers\TransactionsController::class, 'index'])
+Route::get('/transactions', [TransactionsController::class, 'index'])
     ->middleware(['auth'])
     ->name('transactions');
 
