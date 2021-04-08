@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Transaction extends Model
@@ -21,19 +22,19 @@ class Transaction extends Model
     ];
 
     /**
-     * @return HasOne
+     * @return BelongsTo
      */
-    public function user(): HasOne
+    public function user(): BelongsTo
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
-     * @return HasOne
+     * @return BelongsTo
      */
-    public function wallet(): HasOne
+    public function wallet(): BelongsTo
     {
-        return $this->hasOne(Wallet::class);
+        return $this->belongsTo(Wallet::class);
     }
 
     /**
@@ -62,6 +63,32 @@ class Transaction extends Model
         $transaction = new self();
         $transaction->setRawAttributes([
             'type' => 'create_deposit',
+            'user_id' => $userId,
+            'wallet_id' => $walletId,
+            'deposit_id' => $depositId,
+            'amount' => $amount
+        ]);
+        $transaction->saveOrFail();
+    }
+
+    public static function createAccrue($amount, $walletId, $userId, $depositId): void
+    {
+        $transaction = new self();
+        $transaction->setRawAttributes([
+            'type' => 'accrue',
+            'user_id' => $userId,
+            'wallet_id' => $walletId,
+            'deposit_id' => $depositId,
+            'amount' => $amount
+        ]);
+        $transaction->saveOrFail();
+    }
+
+    public static function createCloseDeposit($amount, $walletId, $userId, $depositId): void
+    {
+        $transaction = new self();
+        $transaction->setRawAttributes([
+            'type' => 'close_deposit',
             'user_id' => $userId,
             'wallet_id' => $walletId,
             'deposit_id' => $depositId,

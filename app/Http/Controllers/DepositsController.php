@@ -37,6 +37,6 @@ class DepositsController extends Controller
 
         Deposit::create($validated['recharge-deposit'], Auth::user()->wallet);
 
-        return Redirect::to(route('dashboard'));
+        return Redirect::to(route('deposits'));
     }
 }

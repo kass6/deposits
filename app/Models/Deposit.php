@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
  * @property int $accrue_times
  * @property string $created_at
  * @property string $updated_at
+ * @property Wallet $wallet
  */
 class Deposit extends Model
 {
@@ -36,31 +37,69 @@ class Deposit extends Model
     ];
 
     /**
-     * @return HasOne
+     * @return BelongsTo
      */
-    public function user(): HasOne
+    public function user(): BelongsTo
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
-     * @return HasOne
+     * @return BelongsTo
      */
-    public function wallet(): HasOne
+    public function wallet(): BelongsTo
     {
-        return $this->hasOne(Wallet::class);
+        return $this->belongsTo(Wallet::class);
+    }
+
+    public function close(?bool $save = false, ?bool $saveOrFail = false): ?bool
+    {
+        $this->active = false;
+
+        Transaction::createCloseDeposit('0', $this->wallet_id, $this->user_id, $this->id);
+
+        if ($save) {
+            return $this->save();
+        }
+
+        if ($saveOrFail) {
+            return $this->saveOrFail();
+        }
+
+        return null;
     }
 
     /**
      * Need to check balance before use!
      */
-    public static function create($amount, $wallet)
+    public function accrue(): void
+    {
+        DB::transaction(function () {
+            if ($this->accrue_times < $this->duration) {
+                $this->wallet->accrue($this->invested / 100 * $this->percent, $this->id);
+                ++$this->accrue_times;
+            }
+
+            if ($this->accrue_times >= $this->duration) {
+                $this->close();
+            }
+
+            $this->saveOrFail();
+        });
+    }
+
+    /**
+     * Need to check balance before use!
+     */
+    public static function create($amount, $wallet): void
     {
         DB::transaction(function () use ($amount, $wallet) {
             $wallet->balance -= $amount;
+
             if ($wallet->balance < 0) {
                 return;
             }
+
             $wallet->saveOrFail();
 
             $deposit = new Deposit();
@@ -78,4 +117,5 @@ class Deposit extends Model
             Transaction::createCreateDeposit($amount, $wallet->id, $wallet->user_id, $deposit->id);
         });
     }
+
 }
