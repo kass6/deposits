@@ -1,0 +1,3 @@
+call commands\docker_fix_permissions.bat
+call commands\docker_composer_install.bat
+call commands\docker_supervisor.bat
