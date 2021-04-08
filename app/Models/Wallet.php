@@ -28,7 +28,7 @@ class Wallet extends Model
     {
         DB::transaction(function () use ($amount) {
             $this->balance += $amount;
-            $this->save();
+            $this->saveOrFail();
 
             Transaction::createEnter($amount, $this->id, $this->user_id);
         });

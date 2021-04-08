@@ -54,6 +54,19 @@ class Transaction extends Model
             'deposit_id' => null,
             'amount' => $amount
         ]);
-        $transaction->save();
+        $transaction->saveOrFail();
+    }
+
+    public static function createCreateDeposit($amount, $walletId, $userId, $depositId): void
+    {
+        $transaction = new self();
+        $transaction->setRawAttributes([
+            'type' => 'create_deposit',
+            'user_id' => $userId,
+            'wallet_id' => $walletId,
+            'deposit_id' => $depositId,
+            'amount' => $amount
+        ]);
+        $transaction->saveOrFail();
     }
 }
