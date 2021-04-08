@@ -22,6 +22,7 @@ class DepositsController extends Controller
         return view('deposits', [
             'deposits' => Deposit::query()
                 ->where('user_id', Auth::id())
+                ->orderBy('updated_at', 'DESC')
                 ->paginate(5)
         ]);
     }

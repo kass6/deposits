@@ -36,4 +36,8 @@ Route::post('/deposits/recharge', [DepositsController::class, 'recharge'])
     ->middleware(['auth'])
     ->name('recharge-deposit');
 
+Route::get('/transactions', [\App\Http\Controllers\TransactionsController::class, 'index'])
+    ->middleware(['auth'])
+    ->name('transactions');
+
 require __DIR__ . '/auth.php';
