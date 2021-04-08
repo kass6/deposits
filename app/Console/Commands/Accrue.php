@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Deposit;
+use App\Services\Accrue as AccrueService;
 use Illuminate\Console\Command;
 
 class Accrue extends Command
@@ -38,13 +38,7 @@ class Accrue extends Command
      */
     public function handle()
     {
-        Deposit::query()->with('wallet')->where('active', '=', true)
-            ->chunk(50, function ($deposits) {
-                /** @var Deposit $deposit */
-                foreach ($deposits as $deposit) {
-                    $deposit->accrue();
-                }
-            });
+        (new AccrueService())->process();
 
         return 0;
     }

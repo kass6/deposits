@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\UserBalanceMaxAmount;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RechargeBalanceRequest extends FormRequest
@@ -24,7 +25,12 @@ class RechargeBalanceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'recharge-balance' => 'required|numeric|min:0'
+            'recharge-balance' => [
+                'required',
+                'numeric',
+                'min:0',
+                new UserBalanceMaxAmount(),
+            ]
         ];
     }
 }

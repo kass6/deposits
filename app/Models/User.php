@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Observers\UserObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -44,14 +45,9 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    protected static function booted()
+    protected static function booted(): void
     {
-        static::created(static function (User $user) {
-            $wallet = new Wallet();
-            $wallet->user_id = $user->id;
-            $wallet->balance = 0;
-            $wallet->save();
-        });
+        self::observe(UserObserver::class);
     }
 
     /**
